@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "887773199939",
+    "firebase_url": "https://slot-app-1f93e.firebaseio.com",
+    "project_id": "slot-app-1f93e",
+    "storage_bucket": "slot-app-1f93e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:887773199939:android:42d718467f35147a",
+        "android_client_info": {
+          "package_name": "com.example.slotapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "887773199939-7oppuf7o47baqtqv07jh1k6d2ai2salb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvxL5eOWGFu4IfHW0-_MV9GPSDu3_GwxA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "887773199939-7oppuf7o47baqtqv07jh1k6d2ai2salb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
