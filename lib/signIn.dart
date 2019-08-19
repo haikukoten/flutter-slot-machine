@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'Forgot password/sendEmail.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'home.dart';
 import 'signUp.dart';
 import 'textFormField.dart';
 import 'colors.dart';
 import 'fieldValidations.dart';
 import 'icons.dart';
+import 'fireBaseFunctions.dart';
+import 'getUserInfo.dart';
 
 //import 'buttonTheme.dart';
 class SignIn extends StatefulWidget {
@@ -16,11 +17,11 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn>
-    with TickerProviderStateMixin, TextForm {
+    with TickerProviderStateMixin, TextForm ,User{
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   AnimationController _controller;
   Animation<num> animation;
-
+  GetUserInfo info;
   bool click = true;
   double bottom;
 
@@ -29,7 +30,6 @@ class _SignInState extends State<SignIn>
   Validations validator;
 
   GradientColor gradient;
-
   Widget soc(String path) {
     return ButtonTheme(
         buttonColor: Colors.transparent,
@@ -125,7 +125,8 @@ class _SignInState extends State<SignIn>
                               height: height / 4,
                             ),
                             CreateTextFormField(
-                                'Email', icon.emailIcon, validator.email,keyField: TextInputType.emailAddress),
+                                'Email', icon.emailIcon, validator.email,
+                                keyField: TextInputType.emailAddress),
                             SizedBox(
                               height: height / 20,
                             ),
@@ -149,7 +150,7 @@ class _SignInState extends State<SignIn>
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>ForgotPass()));
+                                            builder: (context) => ForgotPass()));
                                   },
                                   child: Text(
                                     "Forgtot password?",
@@ -169,7 +170,9 @@ class _SignInState extends State<SignIn>
                                 elevation: 0.0,
                                 color: Colors.transparent,
                                 onPressed: () {
-                                   signIn();
+                                  signIn(context, _globalKey.currentState);
+                                  print(
+                                      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                                 },
                                 child: Text(
                                   "Sign in",
@@ -252,55 +255,4 @@ class _SignInState extends State<SignIn>
           ),
         ));
   }
-  void sendData(FirebaseUser user) async {
-    await Firestore.instance.collection('users').document(user.uid).setData({
-      'email': userEmail,
-      'password': userPassword,
-      'lastPasswords': [userPassword]
-    });
-  }
-  Future<void> signIn() async {
-    final _formState = _globalKey.currentState;
-
-    if (_formState.validate()) {
-      _formState.save();
-
-      try {
-        FirebaseUser user = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: userEmail, password: userPassword);
-        if (user.isEmailVerified) {
-          sendData(user);
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Home(
-                    user: user,
-                  )));
-        } else {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) => popup("Email is'nt verified"));
-        }
-      } catch (error) {
-        print(error.message);
-        showDialog(
-            context: context,
-            builder: (BuildContext context) =>
-                popup('Invalid email or password'));
-      }
-    }
-  }
-  Widget popup(String body) {
-    return AlertDialog(
-      content: Text(body),
-      actions: <Widget>[
-        FlatButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            })
-      ],
-    );
-  }
-
 }

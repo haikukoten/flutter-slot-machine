@@ -2,20 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'getUserInfo.dart';
+import 'textFormField.dart';
+import 'fireBaseFunctions.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key key, @required this.user}) : super(key: key);
+  Home({Key key, @required this.user}) : super(key: key);
   final FirebaseUser user;
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> with GetUserInfo {
+class _HomeState extends State<Home> with  TextForm,User {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: gettingData(),
+      appBar: AppBar(title: Text(userNameFromDB)),
+      body: Text(userEmailFromDB),
     );
+
   }
 }

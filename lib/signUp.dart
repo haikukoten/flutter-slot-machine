@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'textFormField.dart';
 import 'colors.dart';
 import 'fieldValidations.dart';
 import 'icons.dart';
+import 'fireBaseFunctions.dart';
 
 class SignUp extends StatefulWidget {
   @override
   _SignUpState createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp> with TextForm {
+class _SignUpState extends State<SignUp> with TextForm, User {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   bool click = true;
   double bottom;
@@ -35,8 +35,6 @@ class _SignUpState extends State<SignUp> with TextForm {
     bottom = MediaQuery.of(context).viewInsets.bottom;
     final double height = MediaQuery.of(context).size.height;
     //   final double width = MediaQuery.of(context).size.width;
-    print(bottom);
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(0, 60, 179, 1),
@@ -106,11 +104,11 @@ class _SignUpState extends State<SignUp> with TextForm {
                             height: 20.0,
                           ),
                           CreateTextFormField(
-                              'Email', icon.emailIcon, validator.email,keyField: TextInputType.emailAddress),
+                              'Email', icon.emailIcon, validator.email,
+                              keyField: TextInputType.emailAddress),
                           SizedBox(
                             height: 20.0,
                           ),
-
                           CreateTextFormField(
                               'Password', icon.passIcon, validator.pass,
                               obs: true),
@@ -124,7 +122,7 @@ class _SignUpState extends State<SignUp> with TextForm {
                               elevation: 0.0,
                               color: Colors.transparent,
                               onPressed: () {
-                                signUp();
+                                signUp(context, _globalKey.currentState);
                               },
                               child: Text(
                                 "Submit",
@@ -145,35 +143,5 @@ class _SignUpState extends State<SignUp> with TextForm {
             ],
           ),
         ));
-  }
-  Future<void> signUp() async {
-    final _formState = _globalKey.currentState;
-    if (_formState.validate()) {
-      _formState.save();
-      try {
-        FirebaseUser user = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: userEmail, password: userPassword);
-
-        await user.sendEmailVerification();
-
-        Navigator.of(context).pop();
-      } catch (error) {
-        print(error.message.toString() + "aaaaaa");
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content: Text(error.message),
-                actions: <Widget>[
-                  FlatButton(
-                      child: Text('OK'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      })
-                ],
-              );
-            });
-      }
-    }
   }
 }
