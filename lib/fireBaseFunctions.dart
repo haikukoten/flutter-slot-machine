@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'gamePage.dart';
 import 'home.dart';
 import 'textFormField.dart';
 
 mixin User on TextForm {
-  static String _name ;
-  static String _email ;
+  static String _name = "";
+  static String _email = "";
   void sendData(FirebaseUser user) async {
     await Firestore.instance.collection('users').document(user.uid).setData({
       'userName': userName,
@@ -18,18 +19,17 @@ mixin User on TextForm {
   Future<void> getData(FirebaseUser user) async {
     DocumentReference allInfo =
         Firestore.instance.collection('users').document(user.uid);
-    var getDoc = allInfo.get().then((doc) {
-      if (!doc.exists) {
+    var a = await allInfo.get();
+    try {
+      if (!a.exists) {
         print('No such document!');
       } else {
-        _name = doc.data['userName'];
-        _email = doc.data['email'];
-        print(_name + '    anun1');
-        print(_email + '      mail');
+        _name = a.data['userName'];
+        _email = a.data['email'];
       }
-    }).catchError((err) {
-      print(err);
-    });
+    } catch (error) {
+      print(error);
+    }
   }
 
   Future<void> signIn(
@@ -43,15 +43,12 @@ mixin User on TextForm {
 
         if (user.isEmailVerified) {
           await getData(user);
-          await Future.delayed(Duration(milliseconds: 500));
-          print(_name + '    anun2');
-          print(_email + '      mail');
 
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Home(
-                        user: user,
+                      //  user: user,
                       )));
         } else {
           showDialog(
@@ -82,7 +79,7 @@ mixin User on TextForm {
 
         Navigator.of(context).pop();
       } catch (error) {
-        print(error.message.toString() + "aaaaaa");
+        print(error.message.toString());
         showDialog(
             context: context,
             builder: (BuildContext context) {
